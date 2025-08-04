@@ -29,6 +29,10 @@ public class ParkingLotService {
     }
 
     public Invoice getInvoice(Ticket ticket) {
+        if (ticket == null) {
+            System.out.println("Ticket is invalid");
+            return null;
+        }
         // release parking spot when vehicle leaves
         parkingManager.releaseParkingSpot(ticket);
         // generate invoice for the "ticket"
@@ -43,7 +47,7 @@ public class ParkingLotService {
                 continue;
             status.put(spot.getType(), status.getOrDefault(spot.getType(), 0) + 1);
         }
-        status.forEach((type, availableSpots) -> System.out.println(type.name() + "\t->\t" + availableSpots));
+        status.forEach((type, availableSpots) -> System.out.println(type.name() + "->\t" + availableSpots));
     }
 /*
     // Payment service is completely different design
