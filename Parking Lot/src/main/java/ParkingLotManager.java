@@ -1,31 +1,31 @@
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Getter
-@Setter
 public class ParkingLotManager {
     private int ticketNum;
     private Set<ParkingSpot> parkingSpots;
     private Map<Ticket, Vehicle> map;
 
     protected void generateParkingSpots(Map<VehicleType, Integer> parkingLotDetails) {
+        parkingSpots = new HashSet<>();
+        map = new java.util.HashMap<>();
         int spotId = 0;
         for (Map.Entry<VehicleType, Integer> e : parkingLotDetails.entrySet()) {
             VehicleType type = e.getKey();
             int quantity = e.getValue();
             while(quantity-- > 0)
-                parkingSpots.add(new ParkingSpot(spotId++, type, false));
+                parkingSpots.add(new ParkingSpot(spotId++, type));
         }
     }
 
     protected ParkingSpot getParkingSpot(VehicleType vehicleType) {
         for (ParkingSpot spot : parkingSpots) {
             if (!spot.isOccupied() && spot.getType() == vehicleType) {
+                spot.setOccupied(true);
+                parkingSpots.add(spot);
                 return spot;
             }
         }
@@ -50,5 +50,17 @@ public class ParkingLotManager {
         long duration = Duration.between(arrivalTime, LocalTime.now()).toHours();
         double finalAmount = vehicleType.getHourlyCharges() * duration * 1f;
         return (int)Math.ceil(finalAmount);
+    }
+
+    public Set<ParkingSpot> getParkingSpots() {
+        return parkingSpots;
+    }
+
+    public Map<Ticket, Vehicle> getMap() {
+        return map;
+    }
+
+    public void setParkingSpots(Set<ParkingSpot> parkingSpots) {
+        this.parkingSpots = parkingSpots;
     }
 }
