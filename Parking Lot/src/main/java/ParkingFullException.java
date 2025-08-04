@@ -1,5 +1,5 @@
 public class ParkingFullException extends RuntimeException {
-    public ParkingFullException() {
-        super("Parking is full!!!");
+    public ParkingFullException(String vehicleType) {
+        super("Parking is full for " + vehicleType + "!!!");
     }
 }

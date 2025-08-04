@@ -13,6 +13,16 @@ public class ParkingLotManager {
     private Set<ParkingSpot> parkingSpots;
     private Map<Ticket, Vehicle> map;
 
+    protected void generateParkingSpots(Map<VehicleType, Integer> parkingLotDetails) {
+        int spotId = 0;
+        for (Map.Entry<VehicleType, Integer> e : parkingLotDetails.entrySet()) {
+            VehicleType type = e.getKey();
+            int quantity = e.getValue();
+            while(quantity-- > 0)
+                parkingSpots.add(new ParkingSpot(spotId++, type, false));
+        }
+    }
+
     protected ParkingSpot getParkingSpot(VehicleType vehicleType) {
         for (ParkingSpot spot : parkingSpots) {
             if (!spot.isOccupied() && spot.getType() == vehicleType) {
@@ -25,17 +35,20 @@ public class ParkingLotManager {
     protected void releaseParkingSpot(Ticket ticket) {
         ParkingSpot spot = ticket.getParkingSpot();
         spot.setOccupied(false);
-        parkingSpots.add(spot);
-        map.remove(ticket);
+        this.parkingSpots.add(spot);
+        this.map.remove(ticket);
     }
 
     protected int generateTicketNumber() {
-        return ticketNum++;
+        // Integer overflow
+        if (ticketNum < 0)
+            ticketNum = 0;
+        return this.ticketNum++;
     }
 
-    protected double getBillAmount(VehicleType vehicleType, LocalTime arrivalTime) {
+    protected int getBillAmount(VehicleType vehicleType, LocalTime arrivalTime) {
         long duration = Duration.between(arrivalTime, LocalTime.now()).toHours();
         double finalAmount = vehicleType.getHourlyCharges() * duration * 1f;
-        return Math.ceil(finalAmount);
+        return (int)Math.ceil(finalAmount);
     }
 }

@@ -1,7 +1,9 @@
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
+@ToString
 public class Invoice {
     private Ticket ticket;
-    private double amount;
+    private int amount;
 }
