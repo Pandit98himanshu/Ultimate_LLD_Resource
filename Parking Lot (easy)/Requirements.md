@@ -1,3 +1,4 @@
+# Parking Lot System (Easy level)
 ## Functional Requirements:–
 The system shall allow:
 1. creating parking lot structure.
