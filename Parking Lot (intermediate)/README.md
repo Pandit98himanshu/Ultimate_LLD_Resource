@@ -1,4 +1,4 @@
-# Parking Lot (advanced)
+# Parking Lot (intermediate)
 
 ## Functional Requirements
 1. The parking lot supports parking for motorcycles, cars, and trucks.
