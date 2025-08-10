@@ -16,7 +16,7 @@ public class ParkingLotService {
     private final FareCalculator fareCalculator;
 
     public ParkingLotService(Map<VehicleSize, List<ParkingSpot>> availableParkingSpots, List<FareStrategy> fareStrategies) {
-        this.ticketIdCounter = 0;
+        this.ticketIdCounter = 100;
         this.manager = new ParkingManager(availableParkingSpots);
         this.fareCalculator = new FareCalculator(fareStrategies);
     }
@@ -37,7 +37,7 @@ public class ParkingLotService {
         // unpark the vehicle from the parking spot
         // and calculate fare for the stay period
         if (ticket == null || ticket.getExitTime() != null) {
-            throw new InvalidTicketException("The ticket " + ticket.getTicketId() + " is invalid.");
+            throw new InvalidTicketException("The ticket is invalid.");
         }
         ticket.setExitTime(LocalTime.now());
         manager.unparkVehicle(ticket.getVehicle());
