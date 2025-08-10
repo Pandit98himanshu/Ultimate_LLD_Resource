@@ -9,8 +9,9 @@ public class CompactParkingSpot implements ParkingSpot {
     private int spotNumber;
     private Vehicle vehicle;
 
-    CompactParkingSpot(int spotNumber) {
+    public CompactParkingSpot(int spotNumber) {
         this.spotNumber = spotNumber;
+        status = ParkingSpotStatus.EMPTY;
     }
     @Override
     public int getSpotNumber() {

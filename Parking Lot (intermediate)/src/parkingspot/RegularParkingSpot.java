@@ -9,8 +9,9 @@ public class RegularParkingSpot implements ParkingSpot {
     private int spotNumber;
     private Vehicle vehicle;
 
-    RegularParkingSpot(int spotNumber) {
+    public RegularParkingSpot(int spotNumber) {
         this.spotNumber = spotNumber;
+        status = ParkingSpotStatus.EMPTY;
     }
     @Override
     public int getSpotNumber() {

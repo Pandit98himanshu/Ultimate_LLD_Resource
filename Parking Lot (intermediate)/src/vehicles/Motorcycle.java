@@ -3,7 +3,7 @@ package vehicles;
 public class Motorcycle implements Vehicle {
     private String licensePlate;
 
-    Motorcycle(String licensePlate) {
+    public Motorcycle(String licensePlate) {
         this.licensePlate = licensePlate;
     }
     @Override

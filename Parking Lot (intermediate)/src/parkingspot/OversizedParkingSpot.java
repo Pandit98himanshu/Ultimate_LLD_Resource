@@ -9,8 +9,9 @@ public class OversizedParkingSpot implements ParkingSpot {
     private int spotNumber;
     private Vehicle vehicle;
 
-    OversizedParkingSpot(int spotNumber) {
+    public OversizedParkingSpot(int spotNumber) {
         this.spotNumber = spotNumber;
+        status = ParkingSpotStatus.EMPTY;
     }
     @Override
     public int getSpotNumber() {
