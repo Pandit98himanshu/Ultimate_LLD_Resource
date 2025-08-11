@@ -5,8 +5,19 @@ import entity.Ticket;
 import java.util.Queue;
 
 public class PaymentService {
-    public boolean makePayment(Ticket ticket) {
+    private boolean isPaymentDone;
+
+    public PaymentService() {
+        this.isPaymentDone = false;
+    }
+
+    public boolean payForTicket(Ticket ticket) {
         // make payment
+        isPaymentDone = true;
         return true;
+    }
+
+    public boolean isPaymentDone() {
+        return isPaymentDone;
     }
 }

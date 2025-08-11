@@ -24,7 +24,7 @@ public class CinemaHall {
         return movieSchedule;
     }
 
-    public char[][] getSeatingArrangement(Movie movie, LocalTime startTime) {
+    public char[][] getSeatingStatus(Movie movie, LocalTime startTime) {
         List<LocalTime> schedule = movieSchedule.get(movie);
         List<List<String>> bookedSeats = movieBookedSeats.get(movie);
         if (bookedSeats == null)
@@ -37,14 +37,28 @@ public class CinemaHall {
         return null;
     }
 
-    public void addBookedSeats(Movie movie, LocalTime startTime, String bookedSeat) {
+    public void addBookedSeats(Movie movie, LocalTime startTime, List<String> bookedSeat) {
         List<LocalTime> schedule = movieSchedule.get(movie);
         List<List<String>> bookedSeats = movieBookedSeats.get(movie);
         for (int i = 0; i < schedule.size(); i++) {
             if (schedule.get(i).equals(startTime)) {
-                bookedSeats.get(i).add(bookedSeat);
+                bookedSeats.get(i).addAll(bookedSeat);
+                break;
             }
         }
+        movieBookedSeats.put(movie, bookedSeats);
+    }
+
+    public void releaseBlockedSeats(Movie movie, LocalTime startTime, List<String> bookedSeat) {
+        List<LocalTime> schedule = movieSchedule.get(movie);
+        List<List<String>> bookedSeats = movieBookedSeats.get(movie);
+        for (int i = 0; i < schedule.size(); i++) {
+            if (schedule.get(i).equals(startTime)) {
+                bookedSeats.get(i).removeAll(bookedSeats);
+                break;
+            }
+        }
+        movieBookedSeats.put(movie, bookedSeats);
     }
 
     private char[][] processAvailableSeats(List<String> bookedSeats) {
