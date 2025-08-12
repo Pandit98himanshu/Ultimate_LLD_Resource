@@ -6,11 +6,12 @@ import java.util.List;
 public class Ticket {
     User user;
     City city;
+    CinemaHall hall;
     Show show;
     LocalTime bookingTime;
     List<String> seats;
 
-    public Ticket(User user, City city, Show show, List<String> seats) {
+    public Ticket(User user, City city, CinemaHall hall, Show show, List<String> seats) {
         this.user = user;
         this.city = city;
         this.show = show;
@@ -23,6 +24,6 @@ public class Ticket {
     }
 
     public void cancel() {
-        this.show.getHall().cancelBookedSeats(this.show, this.seats);
+        this.hall.cancelBookedSeats(this.show, this.seats);
     }
 }

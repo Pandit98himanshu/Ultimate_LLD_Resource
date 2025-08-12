@@ -5,12 +5,10 @@ import java.time.LocalTime;
 public class Show {
     Movie movie;
     LocalTime startTime;
-    CinemaHall hall;
 
-    public Show(Movie movie, LocalTime startTime, CinemaHall hall) {
+    public Show(Movie movie, LocalTime startTime) {
         this.movie = movie;
         this.startTime = startTime;
-        this.hall = hall;
     }
 
     public Movie getMovie() {
@@ -19,10 +17,6 @@ public class Show {
 
     public LocalTime getStartTime() {
         return startTime;
-    }
-
-    public CinemaHall getHall() {
-        return hall;
     }
 
     @Override
@@ -34,11 +28,11 @@ public class Show {
         return false;
         }
         Show show = (Show) obj;
-        return this.movie.equals(show.movie) && this.startTime.equals(show.startTime) && this.hall.equals(show.hall);
+        return this.movie.equals(show.movie) && this.startTime.equals(show.startTime);
     }
 
     @Override
     public int hashCode() {
-        return movie.hashCode() + startTime.hashCode() + hall.hashCode();
+        return movie.hashCode() + startTime.hashCode();
     }
 }

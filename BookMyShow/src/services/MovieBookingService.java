@@ -17,14 +17,14 @@ public class MovieBookingService {
         this.paymentService = new PaymentService();
     }
 
-    public Ticket bookMovie(User user, City city, Show show, List<String> seats) {
+    public Ticket bookMovie(User user, City city, CinemaHall hall, Show show, List<String> seats) {
         // First, try to hold the seats
-        if (!show.getHall().holdSeats(show, seats)) {
+        if (!hall.holdSeats(show, seats)) {
             throw new SelectedSeatUnavailableException();
         }
         
         // Create a ticket
-        this.ticket = new Ticket(user, city, show, seats);
+        this.ticket = new Ticket(user, city, hall, show, seats);
         
         // Wait for payment with timeout using CompletableFuture
         try {
@@ -42,19 +42,26 @@ public class MovieBookingService {
             
             // If payment successful, confirm the booking
             if (paymentService.isPaymentDone()) {
-                if (!show.getHall().confirmBooking(show, seats)) {
+                if (!hall.confirmBooking(show, seats)) {
                     throw new TicketBookingFailedException();
                 }
             } else {
-                show.getHall().releaseHeldSeats(show, seats);
+                hall.releaseHeldSeats(show, seats);
                 this.ticket = null;
             }
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             // Timeout or interruption occurred
-            show.getHall().releaseHeldSeats(show, seats);
+            hall.releaseHeldSeats(show, seats);
             this.ticket = null;
         }
         
         return this.ticket;
+    }
+
+    public void cancelBookedSeats(Ticket ticket) {
+        if (ticket == null) {
+            throw new InvalidTicketException();
+        }
+        ticket.cancel();
     }
 }
