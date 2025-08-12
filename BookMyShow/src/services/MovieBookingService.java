@@ -1,9 +1,12 @@
 package services;
 
 import entity.*;
-
-import java.time.LocalTime;
+import exceptions.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class MovieBookingService {
     private Ticket ticket;
@@ -14,25 +17,44 @@ public class MovieBookingService {
         this.paymentService = new PaymentService();
     }
 
-    public Ticket bookMovie(User user, Movie movie, LocalTime startTime, City city, CinemaHall hall, List<String> seats) {
-        // create a ticket
-        this.ticket = new Ticket(user, movie, city, hall, startTime);
-        // block seats for 5 mins
-        hall.addBookedSeats(movie, startTime, seats);
-        // blocking call for 5 mins
-        LocalTime blockingTime = LocalTime.now().plusMinutes(5);
-        while (!paymentService.isPaymentDone() && LocalTime.now().isBefore(blockingTime)) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
+    public Ticket bookMovie(User user, City city, Show show, List<String> seats) {
+        // First, try to hold the seats
+        if (!show.getHall().holdSeats(show, seats)) {
+            throw new SelectedSeatUnavailableException("Selected seats are not available");
         }
-        // if payment is not done within 5 mins release blocked seats
-        if (!paymentService.isPaymentDone()) {
-            hall.releaseBlockedSeats(movie, startTime, seats);
+        
+        // Create a ticket
+        this.ticket = new Ticket(user, city, show, seats);
+        
+        // Wait for payment with timeout using CompletableFuture
+        try {
+            CompletableFuture.supplyAsync(() -> {
+                while (!paymentService.isPaymentDone()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return false;
+                    }
+                }
+                return paymentService.isPaymentDone();
+            }).get(5, TimeUnit.MINUTES);
+            
+            // If payment successful, confirm the booking
+            if (paymentService.isPaymentDone()) {
+                if (!show.getHall().confirmBooking(show, seats)) {
+                    throw new TicketBookingFailedException("Failed to confirm booking");
+                }
+            } else {
+                show.getHall().releaseHeldSeats(show, seats);
+                this.ticket = null;
+            }
+        } catch (TimeoutException | InterruptedException | ExecutionException e) {
+            // Timeout or interruption occurred
+            show.getHall().releaseHeldSeats(show, seats);
             this.ticket = null;
         }
+        
         return this.ticket;
     }
 }

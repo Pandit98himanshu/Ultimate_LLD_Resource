@@ -2,8 +2,6 @@ package services;
 
 import entity.Ticket;
 
-import java.util.Queue;
-
 public class PaymentService {
     private boolean isPaymentDone;
 
