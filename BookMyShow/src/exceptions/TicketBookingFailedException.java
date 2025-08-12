@@ -1,7 +1,7 @@
 package exceptions;
 
 public class TicketBookingFailedException extends RuntimeException {
-    public TicketBookingFailedException(String message) {
-        super(message);
+    public TicketBookingFailedException() {
+        super("Failed to confirm booking");
     }
 }

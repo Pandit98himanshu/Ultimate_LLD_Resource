@@ -20,7 +20,7 @@ public class MovieBookingService {
     public Ticket bookMovie(User user, City city, Show show, List<String> seats) {
         // First, try to hold the seats
         if (!show.getHall().holdSeats(show, seats)) {
-            throw new SelectedSeatUnavailableException("Selected seats are not available");
+            throw new SelectedSeatUnavailableException();
         }
         
         // Create a ticket
@@ -43,7 +43,7 @@ public class MovieBookingService {
             // If payment successful, confirm the booking
             if (paymentService.isPaymentDone()) {
                 if (!show.getHall().confirmBooking(show, seats)) {
-                    throw new TicketBookingFailedException("Failed to confirm booking");
+                    throw new TicketBookingFailedException();
                 }
             } else {
                 show.getHall().releaseHeldSeats(show, seats);

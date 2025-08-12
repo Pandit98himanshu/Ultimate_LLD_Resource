@@ -27,7 +27,7 @@ public class User {
 
     public void makePayment() {
         if (this.ticket == null) {
-            throw new InvalidTicketException("Invalid Ticket");
+            throw new InvalidTicketException();
         }
         
         PaymentService paymentService = new PaymentService();
