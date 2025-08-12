@@ -16,3 +16,4 @@
 
 1. The system would need to be highly concurrent as there will be multiple booking requests for the same seat at any particular point in time.
 2. Secure and ACID compliant.
+3. System should be scalable and can handle 10,000 requests concurrently.
