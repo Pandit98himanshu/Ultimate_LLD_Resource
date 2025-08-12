@@ -10,4 +10,13 @@ public class City {
         this.name = name;
         this.cinemaHalls = cinemaHalls;
     }
+
+    public List<CinemaHall> getCinemaHalls() {
+        return cinemaHalls;
+    }
+
+    public void addCinemaHall(CinemaHall cinemaHall) {
+        cinemaHalls.add(cinemaHall);
+    }
+    
 }

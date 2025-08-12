@@ -1,10 +1,10 @@
 package entity;
 
-import services.MovieBookingService;
-import services.PaymentService;
-
+import exceptions.InvalidTicketException;
 import java.time.LocalTime;
 import java.util.List;
+import services.MovieBookingService;
+import services.PaymentService;
 
 public class User {
     private String name;
@@ -17,21 +17,31 @@ public class User {
         bookingService = new MovieBookingService();
     }
 
-    public void bookMovieTicket(Movie movie, LocalTime startTime, City city, CinemaHall hall, List<String> seats) {
+    public void bookMovieTicket(City city, Show show, List<String> seats) {
         try {
-            this.ticket = bookingService.bookMovie(this, movie, startTime, city, hall, seats);
+            this.ticket = bookingService.bookMovie(this, city, show, seats);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void makePayment() {
-        boolean retv = false;
-        new Thread(() -> {
-            new PaymentService().payForTicket(this.ticket);
-        }).start();
-        if (retv) {
+        if (this.ticket == null) {
+            throw new InvalidTicketException("Invalid Ticket");
+        }
+        
+        PaymentService paymentService = new PaymentService();
+        boolean paymentSuccess = paymentService.payForTicket(this.ticket);
+        
+        if (paymentSuccess) {
             this.ticket.setBookingTime(LocalTime.now());
+        }
+    }
+
+    public void cancelBooking() {
+        if (this.ticket != null) {
+            this.ticket.cancel();
+            this.ticket = null;
         }
     }
 }
